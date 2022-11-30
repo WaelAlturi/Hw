@@ -1,35 +1,41 @@
 import React,{useState} from 'react';
-import{Text,View,StyleSheet,FlatList,TouchableOpacity}from 'react-native';
+import{Text,View,StyleSheet,FlatList,TouchableOpacity,ActivityIndicator}from 'react-native';
 import People from "./people";
 
 var RandomNumber = Math.floor(Math.random() * 7) + 1 ;
 
 const App = ()=>{
   const [result,setResult]= useState([]);
+  const [isLoading,setLoading] =useState(false);
+
 
   const getData = async () => {
+      setLoading(true);
       const api ='https://fakerapi.it/api/v1/companies?_seed=12456';
       const response = await fetch(api,{
         method: 'get'
     });
       const json = await response.json();
-      setResult(json);
+      setResult(json.data);
+      setLoading(false);
     }
-
 
   return(
     <View style={myStyle.Body}>
-
-      <TouchableOpacity style={myStyle.btn} onPress={getData}>
-          <Text style={myStyle.btntext}>Search</Text>
-      </TouchableOpacity>
+       {
+          isLoading ? (<ActivityIndicator size='large' color ='#8EE3EF' /> ) : 
+          (<TouchableOpacity style={{margin:20}} onPress={getData}>
+            <Text style={myStyle.btntext}>Search</Text>
+        </TouchableOpacity>)
+        }
+      
       <View style={{width:'100%',height:'90%'}}>
       {result?(
           <FlatList
           data={result}
-          keyExtractor={item => item.name}
+          keyExtractor={item => item.id}
           renderItem={iteamRow => 
-            <People  charecter ={iteamRow.item}/>
+            <People  info ={iteamRow.item}/>
           }
           />
           ) :(
@@ -41,6 +47,7 @@ const App = ()=>{
     </View>
     
   )
+
 }
 
 const myStyle =StyleSheet.create({

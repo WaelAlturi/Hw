@@ -5,7 +5,7 @@ const People = (props) =>{
     return(
         <View style={myStyle.row}>
             <View>
-            <Text>hi</Text>
+            <Text>{props.info.name}</Text>
             </View>
         </View>
     )
